@@ -1,4 +1,4 @@
-## Horse Store
+## Horse Store (Video stop at 1.49.25)
 
 ### Function Dispatching
  `Function Dispacthing` is how solidity finding which function to call based on calldata (function selector) we sent, solidity will find a which function we intended to call based on the function selector. solidity did this under the hood for us.
