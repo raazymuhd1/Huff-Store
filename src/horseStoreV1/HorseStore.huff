@@ -1,0 +1,60 @@
+/* interfaces */
+#define function updateHorseNumber(uint256) nonpayable returns()
+#define function readNumberOfHorses() view returns(uint256)
+
+#define constant NUMBER_OF_HORSES_STORAGE_SLOT = FREE_STORAGE_POINTER() // pointing to free slot in storage
+
+#define macro MAIN() = takes(0) returns(0) {
+    // 0x00
+    // calldata (function selector and parameters hashed together)
+    // calldataload // load 32 bytes of data onto the stack (calldataload only load 32 bytes of data onto the stack)
+    // 0x01 every 2 number is 1 byte (01 or 02), which mean 32 bytes is 64 number after 0x and then 64 number divided by 2 which makes it 32 number
+
+    // 1 bytes = 8 bits
+    // SHR (basically removing some bits from the right of the bytes)
+    // 0xe0 // pushing 224 onto the stack
+    // shr // shift right by 224 bits
+    0x00 calldataload 0xe0 shr // resulting in 4 bytes of function selector
+    
+    // Jump => jump into function data associated with the function selector
+    // if func_selector == updateHorseNumber, then jump to that code
+    // if func_selector == readHorseNumber, then jump to that code
+
+    // do the above checking
+    // 0xcdfead2e eq // EQ = equal
+    dup1 __FUNC_SIG(updateHorseNumber) 
+    eq // EQ = equal
+
+    // this line of code tells, that only jump into the function if the selector matches the actual function to call
+    updateJump
+    jumpi // jumpi do the checking before jump, if the function selector is matches then jump otherwise don't 
+    // jumpDest opcode will executed if jumpDest is valid
+
+    // 2 ways to call which function in huff
+    // 0xe026c017 eq readJump jumpi
+    __FUNC_SIG(readHorseNumber) eq readJump jumpi
+
+    // this line tells the contract to revert if the selector didnt matches with the actual function
+    // or we can use revert just to stop the execution 
+    0x00 0x00 revert // REVERT opcode takes 2 argument (offset, size), here i just passed 0 data onto the stack
+
+    updateJump:
+        SET_NUMBER_OF_HORSES()
+    readJump:
+       GET_NUMBER_OF_HORSES()
+}
+
+
+#define macro SET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+    0x04 // 4, accessing a parameter in calldata after the first 4 bytes (function selector)
+    calldataload [NUMBER_OF_HORSES_STORAGE_SLOT] // at which slot to store data on storage
+    // store data on storage and stop the execution after it.
+    sstore stop
+}
+
+#define macro GET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+    [NUMBER_OF_HORSES_STORAGE_SLOT] sload 
+    0x40 mstore // 0x40 is a free memory pointer
+    0x20 0x40 return // offset size
+}
+
