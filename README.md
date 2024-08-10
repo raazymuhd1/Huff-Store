@@ -5,11 +5,16 @@
 
  1. compiling huff contract run this command `huffc ./src/horseStoreV1/HorseStore.huff --bytecode`
 
- ### Contract Creation Process
+ ### Contract Creation code
  these 3 bytecode will be push onto blockchain on the contract creation process
+ - contract creation bytecode
  - contract runtime bytecode
- - contract build time bytecode
- - contract metadata (optional data)
+ - contract metadata (optional data) - basically just adding someting like compiler version we used to develop the contract, constructor data etc
+
+
+## theres 2 ways of contract creation in ETHEREUM
+ - An `EOA` create a contract, this way we won't see any `CREATE` opcode in the opcode return from contract creation
+ - A `contract` create another contract using `create` inline assembly or `CREATE` opcode, this way we will see the `CREATE` opcode in the opcode returned from contract creation.
 
 
  ## 3 Main Part Where Data Stored on EVM (Stack based machine)
@@ -22,3 +27,27 @@
 
  - Memory - data stored on memory will be deleted after the transactions completed (function completed)
  - Storage (persisted) - data stored on storage will be persisted even after transactions completed
+
+
+## Memory in solidity
+
+  in  memory each items/elements are occupied 32 bytes on each slot
+
+- `Free memory pointer (0x40)` - it's pointer that points to the free slot in memory, or basically points to the end of memory
+- `0x00 & 0x20 slot` - is used for hashing in memory
+- `0x60` - is used for initial value for dinamic array, and should be written to
+
+/*  SLOT FOR HASHING     FREE MEMORY POINTER    SLOT FOR INITIAL VALUE FOR DINAMIC ARRAY
++--------+    +--------+    +--------+                +--------+
+|        |    |        |    |        |                |        |
+|  0x00  |    |  0x20  |    |  0x40  |                |  0x60  |
+|        |    |        |    |        |                |        |
++--------+    +--------+    +--------+                +--------+
+*/
+
+  
+0 + 32 = 32 byte  32 + 32 = 64 byte        64
+32 bytes long     32 bytes long        32 bytes long
+slot 0             slot 1                 slot 2
+
+[0x00,             0x20,                  0x40]
