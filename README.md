@@ -12,6 +12,9 @@
  - contract metadata (optional data) - basically just adding someting like compiler version we used to develop the contract, constructor data etc
 
 
+## Program Counter
+ - program counter is basically a counter number of opcodes
+
 ## theres 2 ways of contract creation in ETHEREUM
  - An `EOA` create a contract, this way we won't see any `CREATE` opcode in the opcode return from contract creation
  - A `contract` create another contract using `create` inline assembly or `CREATE` opcode, this way we will see the `CREATE` opcode in the opcode returned from contract creation.
@@ -51,3 +54,12 @@
 slot 0             slot 1                 slot 2
 
 [0x00,             0x20,                  0x40]
+
+
+
+
+
+
+
+## Toolings
+ - [decompile-bytecode](https://app.dedaub.com/) - decompiling solidity bytecode into solidity code

@@ -7,6 +7,7 @@
 
 ## HorseStore.sol opcode
 
+<!-- CONTRACT CREATION CODE -->
 PUSH1 0x80 - this will always the first be the first free slot in memory when contract created
 PUSH1 0x40 - pushing 0x80 into free memory pointer
 MSTORE
@@ -29,6 +30,8 @@ PUSH0   // [0x00, 0xa5]
 RETURN      // [] stack cleared out
 INVALID     // [] mark as invalid
 
+
+<!-- RUNTIME CODE -->
 PUSH1 0x80
 PUSH1 0x40
 MSTORE
@@ -36,16 +39,19 @@ CALLVALUE
 DUP1
 ISZERO
 PUSH1 0x0e
-JUMPI
+// if msg.value == 0, then continue executions
+JUMPI // jump to dest if condition met
 PUSH0
 DUP1
 REVERT
+
 JUMPDEST
 POP
 PUSH1 0x04
 CALLDATASIZE
 LT
 PUSH1 0x30
+<!-- if calldata size less than 4 byte, then jump to program counter -->
 JUMPI
 PUSH0
 CALLDATALOAD
@@ -114,6 +120,8 @@ CALLDATALOAD
 SWAP2
 SWAP1
 POP
+
+<!-- METADATA -->
 JUMP
 INVALID
 LOG2
