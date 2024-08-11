@@ -5,6 +5,7 @@ libs = ["lib"]
 ffi = true # give foundry permission todo anything on our computer
 evm_version = 'shanghai' # foundry uses 'paris' version by default tp compile solidity code
 
-remappings = ["foundry-huff/=lib/foundry-huff/src/", "forge-std/=lib/forge-std/src/"]
+remappings = ["foundry-huff/=lib/foundry-huff/src/", "forge-std/=lib/forge-std/src/", 
+"@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/"]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

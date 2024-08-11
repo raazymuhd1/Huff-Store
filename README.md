@@ -1,7 +1,14 @@
-## Horse Store (Video stop at 1.49.25)
+## Horse Store (Video stop at 3.42.02)
+
+## EVM 
+ - `EVM` is a stack based machine
+   meaning any execution/operations process always happen on the stack before pushing the data onto the memory or storage. stack will be cleared out after executions/operations completed
 
 ### Function Dispatching
  `Function Dispacthing` is how solidity finding which function to call based on calldata (function selector) we sent, solidity will find a which function we intended to call based on the function selector. solidity did this under the hood for us.
+
+ ### How solidity know which function to call when users sending transaction to/or read from the blockchain
+  the way solidity do that is basically by taking the calldata that is pushed onto the stack when users sending transactions or reading from blockchain, from that calldata (function + params) bytes solidity takes the first 4 bytes (1 byte = 8 bits => on calldata bytes 1 byte is each 2 number represents 1 byte) on that calldata which is a function selector, and then solidity perform a check based on that function selector. Whether the function selector exist or not on the contract, if it is exist thus solidity will push `JUMP` onto the stack and `jump` to that `JUMPDEST` in this case is jump to function that matches the function selector.
 
  1. compiling huff contract run this command `huffc ./src/horseStoreV1/HorseStore.huff --bytecode`
 
@@ -58,7 +65,12 @@ slot 0             slot 1                 slot 2
 
 
 
+### Understanding Opcodes
+    By understanding opcodes we will be able to understand what is actually solidity is doing under the hood when we deployed our smart contract onto the blockchain. We literally can understand that by looking into the deployed contract bytecode and walk through the bytecode to understand what is actually solidity's doing when we deployed our contract onto the blockchain.
 
+    Also by understanding opcodes we know why is it smart contract written using solidity much more expensive than smart contract that is written in `HUFF` language. smart contract written in `solidity` is way more expensive than written in `HUFF` lang, bcoz solidity add an extra checking by default when we deployed the contract to reduce more gas costs or for security reasons. And bcoz that of those extra checking, solidity using more `OPCODES` to perform those checking, therefore costs more gas.
+
+    this is different with low-level lang (`YUl` or `HUFF`), where we have more control over our smart contract, we can choose whether or not to perform any extra checking, Therefore we have control over the gas that will be spent when we deployed the contract.
 
 
 ## Toolings

@@ -1,0 +1,103 @@
+/* imports */
+#include "../../lib/huffmate/src/data-structures/Hashmap.huff"
+#include "../../lib/huffmate/src/utils/CommonErrors.huff"
+
+// HORSE STORE INTERFACES
+#define function mintHorse() nonpayable returns()
+#define function feedHorse(uint256) nonpayable returns()
+#define function isHappyHorse(uint256) nonpayable returns()
+#define function horseIdToFedTimeStamp(uint256) nonpayable returns()
+#define function HORSE_HAPPY_IF_FED_WITHIN() nonpayable returns()
+
+#define constant HORSE_FED_TIMESTAMP_LOCATION = FREE_STORAGE_POINTER()
+#define constant HORSE_HAPPY_IF_FED_WITHIN_CONST = 0x0000000000000000000000000000000000000000000000000000000000015180
+
+ #define macro MAIN() = takes(0) returns(0) {
+    0x00 calldataload 0xe0 shr // [function_selector]
+
+    dup1 // [function_selector, function_selector] view on the stack
+    __FUNC_SIG(mintHorse) eq mintHorse /* jump dest */ jumpi // jumpi takes a program counter as param
+    dup1 __FUNC_SIG(feedHorse) eq feedHorse jumpi
+    dup1 __FUNC_SIG(isHappyHorse) eq isHappyHorse jumpi
+    dup1 __FUNC_SIG(horseIdToFedTimeStamp) eq horseIdToFedTimeStamp jumpi
+    dup1 __FUNC_SIG(HORSE_HAPPY_IF_FED_WITHIN) eq HORSE_HAPPY_IF_FED_WITHIN jumpi
+
+
+    mintHorse:
+        MINT_HORSE()
+
+    feedHorse:
+        FEED_HORSE()
+    
+    isHappyHorse:
+        IS_HAPPY_HORSE()
+
+    horseIdToFedTimeStamp: 
+        HORSE_ID_TO_FED_TIMESTAMP()
+    
+    HORSE_HAPPY_IF_FED_WITHIN: 
+        HORSE_HAPPY_IF_FED_WITHIN()
+ }
+
+ #define macro MINT_HORSE() = takes(0) returns(0) {
+
+ }
+
+ #define macro FEED_HORSE() = takes(0) returns(0) {
+    timestamp
+    0x04 calldataload 
+    [HORSE_FED_TIMESTAMP_LOCATION]
+    STORE_ELEMENT_FROM_KEYS(0x00) // free memory pointer as a param, here we just passed slot 0 on memory
+    stop
+ }
+
+ #define macro IS_HAPPY_HORSE() = takes(0) returns(0) {
+    0x04 calldataload 
+    [HORSE_FED_TIMESTAMP_LOCATION]
+    STORE_ELEMENT_FROM_KEYS(0x00) // free memory pointer as a param, here we just passed slot 0 on memory
+    timestamp
+    dup2 dup2
+    sub
+
+    [HORSE_HAPPY_IF_FED_WITHIN_CONST]
+    gt
+    start_return_true jumpi
+    eq
+    start_return
+    jump    
+
+    start_return_true:
+        0x01 // true, in programming lang 1 is true for boolean and 0 if false for boolean
+
+    start_return:
+        0x00 mstore
+        0x20 0x00 return
+ }
+
+ #define macro HORSE_ID_TO_FED_TIMESTAMP() = takes(0) returns(0) {
+    0x04 calldataload 
+    [HORSE_FED_TIMESTAMP_LOCATION] LOAD_ELEMENTS_FROM_KEYS(0x00)
+    0x00 mstore
+    // return at offset 0 in memory, with 32 bytes in size
+    0x20 0x00 return
+ }
+
+ #define macro HORSE_HAPPY_IF_FED_WITHIN() = takes(0) returns(0) {
+    [HORSE_HAPPY_IF_FED_WITHIN_CONST]
+    0x00 mstore
+    0x20 0x00 return
+ }
+
+
+ // "NON_PAYABLE" Revert Message String
+#define constant NON_PAYABLE_ERROR = 0xb4e4f4e5f50415941424c45000000000000000000000000000000000000000000
+#define constant NON_PAYABLE_LENGTH = 0x0b
+
+/// @notice Reverts if the call has a non-zero value
+/// @notice Reverts with message "NON_PAYABLE"
+#define macro NON_PAYABLE() = takes (0) returns (0) {
+    [NON_PAYABLE_ERROR]      // ["NON_PAYABLE"]
+    [NON_PAYABLE_LENGTH]     // [11 (length), "NON_PAYABLE"]
+    callvalue iszero         // [msg.value == 0, 11 (length), "NON_PAYABLE"]
+    REQUIRE()                // []
+}
