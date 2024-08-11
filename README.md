@@ -1,4 +1,4 @@
-## Horse Store (Video stop at 3.42.02)
+## Horse Store (Next Up will be Formal Verification on MathMasters (cyfrin updraft))
 
 ## EVM 
  - `EVM` is a stack based machine
@@ -72,6 +72,8 @@ slot 0             slot 1                 slot 2
 
     this is different with low-level lang (`YUl` or `HUFF`), where we have more control over our smart contract, we can choose whether or not to perform any extra checking, Therefore we have control over the gas that will be spent when we deployed the contract.
 
+## Little Note 
+ - `Differential Testing` - is testing 2 the same code bases in one testing code ex: `test/v1/Base_TestV1.sol`
 
 ## Toolings
  - [decompile-bytecode](https://app.dedaub.com/) - decompiling solidity bytecode into solidity code
